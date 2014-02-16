@@ -1,6 +1,8 @@
 DEBUG = True
 REVERSE_TASK = False
 
+import copy
+
 def print_matr(matr, system_of_nulls = None):
     if system_of_nulls == None:
         system_of_nulls = []
@@ -119,11 +121,19 @@ def build_l_line(stared_zeros, quoted_zeros):
         select_and_take(stared_zeros, 1, coord,l_line, first_iteration, quoted_zeros)
     return l_line
 
+def calc_func(original_matr, solution):
+    result = 0
+    for i in range(0, len(solution)):
+        for j in range(0, len(solution)):
+            result += solution[i][j] * original_matr[i][j]
+    return result
+
 matr = [[6, 10, 4, 5, 8],
         [8, 10, 7, 9, 11],
         [4, 8, 9, 10, 6],
         [5, 9, 6, 11, 10],
         [6, 11, 6, 3, 9]]
+original_matr = copy.deepcopy(matr)
 print_matr(matr)
 matrix_preparation(matr)
 system_of_nulls = find_independent_nulls(matr)
@@ -156,3 +166,4 @@ while len(system_of_nulls) < len(matr):
 debug_print(matr, system_of_nulls)
 result = [[1 if (i, j) in system_of_nulls else 0 for j in range(0, len(matr))] for i in range(0, len(matr))]
 print_matr(result)
+print('Solution is: %d' % (calc_func(original_matr, result)))
