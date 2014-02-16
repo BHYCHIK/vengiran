@@ -1,13 +1,20 @@
 DEBUG = True
 
-def print_matr(matr):
+def print_matr(matr, system_of_nulls = None):
+    if system_of_nulls == None:
+        system_of_nulls = []
     for i in range(0, len(matr)):
-        print(matr[i])
+        for j in range(0, len(matr)):
+            if matr[i][j] == 0 and ((i, j) in system_of_nulls):
+                print('*', end=' ')
+            else:
+                print(matr[i][j], end=' ')
+        print()
     print()
 
-def debug_print(matr):
+def debug_print(matr, system_of_nulls = None):
     if DEBUG:
-        print_matr(matr)
+        print_matr(matr, system_of_nulls)
 
 def matrix_preparation(matr):
     for j in range(0, len(matr)):
@@ -103,9 +110,11 @@ def build_l_line(stared_zeros, quoted_zeros):
     return l_line
 
 matr = [[5, 6, 7, 1],[10, 4, 6, 7], [8, 5, 3, 5], [12, 5, 9, 8]]
+print_matr(matr)
 matrix_preparation(matr)
 system_of_nulls = find_independent_nulls(matr)
 while len(system_of_nulls) < len(matr):
+    debug_print(matr, system_of_nulls)
     marked_columns = [system_of_nulls[i][1] for i in range(0, len(system_of_nulls))]
     marked_rows = []
     quoted_zeros = []
@@ -131,6 +140,6 @@ while len(system_of_nulls) < len(matr):
             system_of_nulls.remove(l_line[i])
         else:
             system_of_nulls.append(l_line[i])
-
+debug_print(matr, system_of_nulls)
 result = [[1 if (i, j) in system_of_nulls else 0 for j in range(0, len(matr))] for i in range(0, len(matr))]
-print(result)
+print_matr(result)
