@@ -1,4 +1,5 @@
 DEBUG = True
+REVERSE_TASK = True
 
 def print_matr(matr, system_of_nulls = None):
     if system_of_nulls == None:
@@ -18,11 +19,20 @@ def debug_print(matr, system_of_nulls = None):
 
 def matrix_preparation(matr):
     for j in range(0, len(matr)):
-        min_elem = matr[0][j]
+        if not REVERSE_TASK:
+            min_elem = matr[0][j]
+        else:
+            max_elem = matr[0][j]
         for i in range(0, len(matr)):
-            min_elem = matr[i][j] if matr[i][j] < min_elem else min_elem
+            if not REVERSE_TASK:
+                min_elem = matr[i][j] if matr[i][j] < min_elem else min_elem
+            else:
+                max_elem = matr[i][j] if matr[i][j] > max_elem else max_elem
         for i in range(0, len(matr)):
-            matr[i][j] -= min_elem
+            if not REVERSE_TASK:
+                matr[i][j] -= min_elem
+            else:
+                matr[i][j] = max_elem - matr[i][j]
     for i in range(0, len(matr)):
         min_elem = min(matr[i])
         matr[i] = list(map(lambda x: x - min_elem, matr[i]))
@@ -109,7 +119,7 @@ def build_l_line(stared_zeros, quoted_zeros):
         select_and_take(stared_zeros, 1, coord,l_line, first_iteration, quoted_zeros)
     return l_line
 
-matr = [[5, 6, 7, 1],[10, 4, 6, 7], [8, 5, 3, 5], [12, 5, 9, 8]]
+matr = [[10, 7, 6, 9],[5, 9, 7, 3], [7, 8, 10, 5], [3, 8, 4, 2]]
 print_matr(matr)
 matrix_preparation(matr)
 system_of_nulls = find_independent_nulls(matr)
