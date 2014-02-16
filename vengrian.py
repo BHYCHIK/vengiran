@@ -1,5 +1,5 @@
 DEBUG = True
-REVERSE_TASK = True
+REVERSE_TASK = False
 
 def print_matr(matr, system_of_nulls = None):
     if system_of_nulls == None:
@@ -119,7 +119,11 @@ def build_l_line(stared_zeros, quoted_zeros):
         select_and_take(stared_zeros, 1, coord,l_line, first_iteration, quoted_zeros)
     return l_line
 
-matr = [[10, 7, 6, 9],[5, 9, 7, 3], [7, 8, 10, 5], [3, 8, 4, 2]]
+matr = [[6, 10, 4, 5, 8],
+        [8, 10, 7, 9, 11],
+        [4, 8, 9, 10, 6],
+        [5, 9, 6, 11, 10],
+        [6, 11, 6, 3, 9]]
 print_matr(matr)
 matrix_preparation(matr)
 system_of_nulls = find_independent_nulls(matr)
