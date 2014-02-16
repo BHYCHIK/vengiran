@@ -132,7 +132,8 @@ while len(system_of_nulls) < len(matr):
     marked_columns = [system_of_nulls[i][1] for i in range(0, len(system_of_nulls))]
     marked_rows = []
     quoted_zeros = []
-    while True:
+    cont = True
+    while cont:
         if not is_any_unmarked_nulls(matr, marked_columns, marked_rows):
             create_unmarked_nulls(matr, marked_columns, marked_rows)
         new_marked_columns = marked_columns[:]
@@ -146,8 +147,6 @@ while len(system_of_nulls) < len(matr):
             cont = cont or ret
         marked_columns = new_marked_columns[:]
         marked_rows = new_marked_rows[:]
-        if not cont:
-            break
     l_line = build_l_line(system_of_nulls, quoted_zeros)
     for i in range(0, len(l_line)):
         if i % 2 == 1:
