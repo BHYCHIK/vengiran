@@ -90,20 +90,16 @@ def row_contains_marked_and_unmarked_nulls(matr, marked_columns, marked_rows, sy
                         ret = True
                         old_z = z
                         break
-                yield ret, (i, j), old_z
+                return ret, (i, j), old_z
 
-def select_and_take(zeros, coord_type, coord, l_line, first_iteration, other_zeros):
+def select_and_take(zeros, coord_type, coord, l_line, first_iteration):
     if not first_iteration:
         try:
             found = [z for z in zeros if (z[coord_type] == coord) and z not in l_line][0]
         except IndexError:
             return False
     else:
-        found = zeros[0]
-        for z1 in zeros:
-            for z2 in other_zeros:
-                if z1[1] == z2[1]:
-                    found = z1
+        found = zeros[len(zeros) - 1]
     l_line.append(found)
     return True
 
@@ -113,12 +109,12 @@ def build_l_line(stared_zeros, quoted_zeros):
     first_iteration = True
     while True:
         coord = l_line[len(l_line) - 1][0] if len(l_line) > 0 else 0
-        result = select_and_take(quoted_zeros, 0, coord,l_line, first_iteration, stared_zeros)
+        result = select_and_take(quoted_zeros, 0, coord,l_line, first_iteration)
         if not result:
             break
         first_iteration = False
         coord = l_line[len(l_line) - 1][1]
-        select_and_take(stared_zeros, 1, coord,l_line, first_iteration, quoted_zeros)
+        select_and_take(stared_zeros, 1, coord,l_line, first_iteration)
     return l_line
 
 def calc_func(original_matr, solution):
@@ -133,6 +129,14 @@ matr = [[6, 10, 4, 5, 8],
         [4, 8, 9, 10, 6],
         [5, 9, 6, 11, 10],
         [6, 11, 6, 3, 9]]
+
+matr = [[1, 1, 1, 1, 1],
+        [1, 10, 4, 3, 6],
+        [1, 6, 9, 5, 2],
+        [1, 2, 5, 2, 4],
+        [1, 4, 2, 9, 3]]
+
+
 original_matr = copy.deepcopy(matr)
 print_matr(matr)
 matrix_preparation(matr)
@@ -146,17 +150,11 @@ while len(system_of_nulls) < len(matr):
     while cont:
         if not is_any_unmarked_nulls(matr, marked_columns, marked_rows):
             create_unmarked_nulls(matr, marked_columns, marked_rows)
-        new_marked_columns = marked_columns[:]
-        new_marked_rows = marked_rows[:]
-        cont = False
-        for (ret, new_z, old_z) in row_contains_marked_and_unmarked_nulls(matr, marked_columns, marked_rows, system_of_nulls):
-            if ret:
-                new_marked_columns.remove(old_z[1])
-                new_marked_rows.append(new_z[0])
-            quoted_zeros.append(new_z)
-            cont = cont or ret
-        marked_columns = new_marked_columns[:]
-        marked_rows = new_marked_rows[:]
+        (cont, new_z, old_z) = row_contains_marked_and_unmarked_nulls(matr, marked_columns, marked_rows, system_of_nulls)
+        if cont:
+            marked_columns.remove(old_z[1])
+            marked_rows.append(new_z[0])
+        quoted_zeros.append(new_z)
     l_line = build_l_line(system_of_nulls, quoted_zeros)
     for i in range(0, len(l_line)):
         if i % 2 == 1:
