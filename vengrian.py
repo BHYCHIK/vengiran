@@ -3,21 +3,26 @@ REVERSE_TASK = False
 
 import copy
 
-def print_matr(matr, system_of_nulls = None):
+def print_matr(matr, system_of_nulls = None, quouted_zeros = None):
     if system_of_nulls == None:
         system_of_nulls = []
     for i in range(0, len(matr)):
         for j in range(0, len(matr)):
             if matr[i][j] == 0 and ((i, j) in system_of_nulls):
                 print('*', end=' ')
+            if (quouted_zeros is not None) and matr[i][j] == 0 and ((i, j) in quouted_zeros):
+                print('\'', end=' ')
             else:
                 print(matr[i][j], end=' ')
         print()
     print()
 
-def debug_print(matr, system_of_nulls = None):
+def debug_print(outp, system_of_nulls = None, quoted_zeros = None):
     if DEBUG:
-        print_matr(matr, system_of_nulls)
+        if isinstance(outp, str):
+            print(outp)
+        else:
+            print_matr(outp, system_of_nulls, quoted_zeros)
 
 def matrix_preparation(matr):
     for j in range(0, len(matr)):
@@ -133,7 +138,7 @@ matr = [[6, 10, 4, 5, 8],
 matr = [[1, 1, 1, 1, 1],
         [1, 10, 4, 3, 6],
         [1, 6, 9, 5, 2],
-        [1, 2, 5, 2, 4],
+        [1, 8, 5, 2, 4],
         [1, 4, 2, 9, 3]]
 
 
@@ -141,7 +146,10 @@ original_matr = copy.deepcopy(matr)
 print_matr(matr)
 matrix_preparation(matr)
 system_of_nulls = find_independent_nulls(matr)
+iteration_num = 0
 while len(system_of_nulls) < len(matr):
+    iteration_num = iteration_num + 1
+    print("iteration %d" % (iteration_num))
     debug_print(matr, system_of_nulls)
     marked_columns = [system_of_nulls[i][1] for i in range(0, len(system_of_nulls))]
     marked_rows = []
@@ -156,6 +164,7 @@ while len(system_of_nulls) < len(matr):
             marked_rows.append(new_z[0])
         quoted_zeros.append(new_z)
     l_line = build_l_line(system_of_nulls, quoted_zeros)
+    debug_print(matr, system_of_nulls, quoted_zeros)
     for i in range(0, len(l_line)):
         if i % 2 == 1:
             system_of_nulls.remove(l_line[i])
